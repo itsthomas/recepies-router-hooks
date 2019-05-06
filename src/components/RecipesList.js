@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
 import food2Fork from '../apis/food2Fork';
 import { NavLink } from 'react-router-dom';
+import { conditionalExpression } from '@babel/types';
 
 const RecipesList = ({ term }) => {
   const [list, setList] = useState([]);
@@ -12,18 +13,21 @@ const RecipesList = ({ term }) => {
     You cannot have async or promises inside useEffect unless you run them as IIFE
   ================================================================================= */
   useEffect(() => {
-    (async term => {
-      const response = await food2Fork.get('/search', {
-        params: {
-          q: term,
-          count: 12
-        }
-      });
+    // Without this if condition an API request starts on first page load
+    if (term) {
+      (async term => {
+        const response = await food2Fork.get('/search', {
+          params: {
+            q: term,
+            count: 12
+          }
+        });
 
-      // console.log(response.data.recipes);
+        // console.log(response.data.recipes);
 
-      setList(response.data.recipes);
-    })(term);
+        setList(response.data.recipes);
+      })(term);
+    }
 
     // let recipes = JSON.stringify(list);
     // localStorage.setItem('recipes', recipes);
