@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import food2Fork from '../apis/food2Fork';
 import { NavLink } from 'react-router-dom';
 
 const RecipesList = ({ term }) => {
@@ -12,15 +13,14 @@ const RecipesList = ({ term }) => {
   ================================================================================= */
   useEffect(() => {
     (async term => {
-      const hackCorPolicy = 'https://cors-anywhere.herokuapp.com/';
-      const api_url = 'https://www.food2fork.com/api';
-      const api_key = '78a638f0d574c1becfd1245d7da6409d';
-      const count = 12;
+      const response = await food2Fork.get('/search', {
+        params: {
+          q: term,
+          count: 12
+        }
+      });
 
-      const response = await axios.get(
-        `${hackCorPolicy}${api_url}/search?key=${api_key}&q=${term}&count=${count}`
-      );
-      console.log(response.data.recipes);
+      // console.log(response.data.recipes);
 
       setList(response.data.recipes);
     })(term);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import food2Fork from '../apis/food2Fork';
 import { Link } from 'react-router-dom';
 
 // props is passed to this component only because of react-router-dom and to={{}} inside RecipeList.js
@@ -10,21 +10,21 @@ const Recipe = props => {
 
   const [activeRecipe, setActiveRecipe] = useState([]);
 
+  // state comes from RecipesList component via react-router and to={{}}
   const title = props.location.state.recipe;
 
   useEffect(
     props => {
-      // props comes from RecipesList because of to={{ state: { recipe: item.title } }}
+      // props.title comes from RecipesList because of to={{ state: { recipe: item.title } }}
       (async title => {
-        const hackCorPolicy = 'https://cors-anywhere.herokuapp.com/';
-        const api_url = 'https://www.food2fork.com/api';
-        const api_key = '78a638f0d574c1becfd1245d7da6409d';
+        const response = await food2Fork.get('/search', {
+          params: {
+            q: title,
+            count: 1
+          }
+        });
 
-        const response = await axios.get(
-          `${hackCorPolicy}${api_url}/search?key=${api_key}&q=${title}`
-        );
-        console.log(response.data.recipes[0]);
-
+        console.log('Our Response: ', response.data.recipes[0]);
         setActiveRecipe(response.data.recipes[0]);
       })(title);
     },
